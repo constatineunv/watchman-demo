@@ -318,9 +318,9 @@
 <circle cx="32" cy="31" r="2.7" fill="#00B4FC"/></svg>
     <div class="mannawords">
       <h1 class="mannaname">WATCHMAN</h1>
-      <div class="mannaexp"><b>M</b>etrics &middot; <b>A</b>ccelerated <b>N</b>etworking &middot; <b>N</b>VA <b>A</b>ppliances</div>
+      <div class="mannaexp">FLOW CAPACITY &middot; ACCELERATED CONNECTIONS &middot; AZURE NVA FLEET</div>
       <div class="mannarule"></div>
-      <div class="mannatag">Daily bread, measured.</div>
+      <div class="mannatag">Know the ceiling before you reach it.</div>
     </div>
   </div>
     <span class="eyebrow">Azure CLI &middot; Azure PowerShell &middot; offline reference</span>
@@ -539,6 +539,50 @@ const CATS=[{"id": "ctx", "name": "Sign-in & context"}, {"id": "disc", "name": "
   const b=$('themeBtn');
   b.addEventListener('click',()=>window.__setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
   render();
+})();
+</script>
+<div id="wmCatIndex" class="wm-cats" aria-label="Jump to a category"></div>
+<style>
+.wm-cats{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 4px}
+.wm-cats a{display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+  font-family:var(--mono),Consolas,monospace;font-size:11.5px;letter-spacing:.04em;
+  padding:5px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
+  color:rgba(232,237,247,.72);background:rgba(255,255,255,.02);transition:.15s}
+.wm-cats a:hover{border-color:rgba(252,204,0,.5);color:#FCCC00;background:rgba(252,204,0,.07)}
+.wm-cats a i{font-style:normal;font-size:10px;opacity:.55}
+.wm-cats a.vendor{border-color:rgba(0,180,252,.34);color:rgba(120,215,255,.92)}
+.wm-cats a.vendor:hover{border-color:rgba(0,180,252,.75);color:#8FDCFF;background:rgba(0,180,252,.10)}
+</style>
+<script>
+(function(){
+  function build(){
+    var host=document.getElementById('wmCatIndex');
+    if(!host||typeof CATS==='undefined'||typeof CMDS==='undefined') return;
+    // Vendor categories are visually distinct: they are the least expected
+    // content on a page titled "Azure command reference".
+    var VENDOR={pan:1,jnpr:1};
+    var heads=[].slice.call(document.querySelectorAll('h2'));
+    host.innerHTML=CATS.map(function(c){
+      var n=CMDS.filter(function(x){return x.cat===c.id;}).length;
+      if(!n) return '';
+      return '<a href="#" data-cat="'+c.id+'" class="'+(VENDOR[c.id]?'vendor':'')+'">'+
+             c.name+' <i>'+n+'</i></a>';
+    }).join('');
+    host.addEventListener('click',function(e){
+      var a=e.target.closest('a[data-cat]'); if(!a) return;
+      e.preventDefault();
+      var cat=CATS.filter(function(c){return c.id===a.getAttribute('data-cat');})[0];
+      if(!cat) return;
+      var h=heads.filter(function(x){return x.textContent.trim()===cat.name;})[0];
+      if(h) h.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    // Mount it directly under the filter row, where the reader already is.
+    var cnt=document.querySelector('.count');
+    var anchor=cnt?cnt.parentNode:null;
+    if(anchor&&anchor.parentNode) anchor.parentNode.insertBefore(host,anchor.nextSibling);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build);
+  else build();
 })();
 </script>
 </body>
