@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WATCHMAN · Azure Command Reference · Demo Corp · SYNTHETIC DEMO DATA</title>
+<title>WATCHMAN · Azure Command Reference · Azure Sandbox · SYNTHETIC DEMO DATA</title>
 <script>
 (function(){
   var t=null;
@@ -267,46 +267,53 @@
     font-size:1rem;color:rgba(255,255,255,.82)}
   .mark{width:46px;height:46px;flex:0 0 auto;filter:drop-shadow(0 3px 10px rgba(0,0,0,.28))}
 </style>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMEEwRDE0Ii8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJ3Z29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkU5OEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNFMEE4MUUiLz4KPC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjI0LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCN3Z29sZCkiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIuMjYiLz4KPHBhdGggZD0iTTE0IDQ1VjMxLjVhMTggMTggMCAwIDEgMzYgMFY0NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI3dnb2xkKSIgc3Ryb2tlLXdpZHRoPSIzLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNOC41IDQ1aDQ3IiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjd2dvbGQpIiBzdHJva2Utd2lkdGg9IjMuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9IjMyIiBjeT0iMzEiIHI9IjcuNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBCNEZDIiBzdHJva2Utd2lkdGg9IjIuNiIvPgo8Y2lyY2xlIGN4PSIzMiIgY3k9IjMxIiByPSIyLjciIGZpbGw9IiMwMEI0RkMiLz48L3N2Zz4="></head>
+<style>
+.wnav{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:26px;
+  padding:11px 28px;background:rgba(7,10,17,.94);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.09);font-family:'InterEmb','Segoe UI',system-ui,sans-serif}
+.wnav .wbrand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#E8EDF7}
+.wnav .wbrand svg{width:26px;height:26px;flex:none}
+.wnav .wname{font-weight:700;letter-spacing:.15em;font-size:15px}
+.wnav .wazure{width:19px;height:19px;margin-left:2px;opacity:.95}
+.wnav .wtabs{display:flex;gap:22px;font-size:14px}
+.wnav .wtab{color:rgba(232,237,247,.66);text-decoration:none;padding:5px 0;border-bottom:2px solid transparent;white-space:nowrap}
+.wnav .wtab:hover{color:#E8EDF7}
+.wnav .wtab.on{color:#FCCC00;border-bottom-color:#FCCC00}
+.wnav .wright{margin-left:auto;display:flex;align-items:center;gap:10px}
+.wnav .wlive{display:inline-flex;align-items:center;gap:8px;font-family:'PlexEmb',Consolas,monospace;
+  font-size:11.5px;letter-spacing:.12em;color:#3FCF6B;
+  border:1px solid rgba(63,207,107,.4);background:rgba(63,207,107,.08);
+  border-radius:999px;padding:5px 12px}
+.wnav .wldot{width:7px;height:7px;border-radius:50%;background:#3FCF6B;
+  box-shadow:0 0 0 0 rgba(63,207,107,.6);animation:wlPulse 2.1s infinite}
+@keyframes wlPulse{0%{box-shadow:0 0 0 0 rgba(63,207,107,.55)}70%{box-shadow:0 0 0 7px rgba(63,207,107,0)}100%{box-shadow:0 0 0 0 rgba(63,207,107,0)}}
+@media(prefers-reduced-motion:reduce){.wnav .wldot{animation:none}}
+.wtoggle{display:none;background:none;border:1px solid rgba(255,255,255,.14);
+  border-radius:8px;padding:7px 9px;cursor:pointer;color:#E8EDF7}
+.wtoggle span{display:block;width:18px;height:2px;background:currentColor;margin:3px 0;border-radius:2px}
+@media(max-width:820px){
+  .wnav{flex-wrap:wrap;gap:12px;padding:11px 16px}
+  .wtoggle{display:block}
+  .wnav .wtabs{display:none;flex-direction:column;width:100%;gap:0;order:3}
+  .wnav.open .wtabs{display:flex}
+  .wnav .wtabs .wtab{padding:11px 2px;border-bottom:1px solid rgba(255,255,255,.08)}
+}
+</style>
+<script>
+(function(){var b=document.getElementById('wnavToggle');if(!b)return;var n=b.closest('.wnav');
+b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');});})();
+</script><link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMEEwRDE0Ii8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJ3Z29sZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNGRkU5OEEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNFMEE4MUUiLz4KPC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxjaXJjbGUgY3g9IjMyIiBjeT0iMzIiIHI9IjI0LjUiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCN3Z29sZCkiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIuMjYiLz4KPHBhdGggZD0iTTE0IDQ1VjMxLjVhMTggMTggMCAwIDEgMzYgMFY0NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI3dnb2xkKSIgc3Ryb2tlLXdpZHRoPSIzLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNOC41IDQ1aDQ3IiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjd2dvbGQpIiBzdHJva2Utd2lkdGg9IjMuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9IjMyIiBjeT0iMzEiIHI9IjcuNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBCNEZDIiBzdHJva2Utd2lkdGg9IjIuNiIvPgo8Y2lyY2xlIGN4PSIzMiIgY3k9IjMxIiByPSIyLjciIGZpbGw9IiMwMEI0RkMiLz48L3N2Zz4="></head>
 <body>
-<nav class="mnav" aria-label="WATCHMAN">
-  <a class="mbrand" href="./index.html"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="wgold" x1="0" y1="0" x2="0" y2="1">
+<nav class="wnav" id="wnav"><a class="wbrand" href="./index.html" title="WATCHMAN home"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="wgold" x1="0" y1="0" x2="0" y2="1">
 <stop offset="0" stop-color="#FFE98A"/><stop offset="1" stop-color="#E0A81E"/>
 </linearGradient></defs>
 <circle cx="32" cy="32" r="24.5" fill="none" stroke="url(#wgold)" stroke-width="1.5" opacity=".26"/>
 <path d="M14 45V31.5a18 18 0 0 1 36 0V45" fill="none" stroke="url(#wgold)" stroke-width="3.4" stroke-linecap="round"/>
 <path d="M8.5 45h47" fill="none" stroke="url(#wgold)" stroke-width="3.4" stroke-linecap="round"/>
 <circle cx="32" cy="31" r="7.6" fill="none" stroke="#00B4FC" stroke-width="2.6"/>
-<circle cx="32" cy="31" r="2.7" fill="#00B4FC"/></svg>
-    <b>WATCHMAN</b>
-  </a>
-  <div class="mtabs">
-    <a class="mtab" href="./index.html">Flow capacity</a>
-    <a class="mtab on" href="./commands.html" aria-current="page">Command reference</a><a class="mtab" href="./panorama.html">Panorama estate</a>
-  </div>
-  <div class="mgrow"></div>
-  <span class="mfresh fresh"><span class="fd"></span><span class="ftxt" id="cmdChipCount">&mdash; commands &middot; offline</span></span>
-  <button type="button" class="mbtn mtheme" id="themeBtn" title="Toggle light / dark (D)" aria-label="Toggle theme">
-    <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-    <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5"/></svg>
-  </button>
-</nav>
+<circle cx="32" cy="31" r="2.7" fill="#00B4FC"/></svg><span class="wname">WATCHMAN</span><svg class="wazure" viewBox="0 0 96 96" role="img" aria-label="Runs on Microsoft Azure"><defs><linearGradient id="azg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3CCBF4"/><stop offset="1" stop-color="#0078D4"/></linearGradient></defs><path d="M41 9h20l27 78H66L41 9z" fill="url(#azg)"/><path d="M35 17L8 87h33l7-18H31l7-19-3-33z" fill="url(#azg)" opacity=".82"/></svg></a><span class="wtabs"><a class="wtab" href="./index.html">Flow capacity</a><a class="wtab on" href="./commands.html">Command reference</a><a class="wtab" href="./panorama.html">Panorama estate</a></span><span class="wright"><span class="wlive"><span class="wldot"></span>Live</span></span><button class="wtoggle" id="wnavToggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button></nav>
 
 <div class="hero">
-  <div class="herotop">
-    <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="WATCHMAN"><defs><linearGradient id="wgold" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0" stop-color="#FFE98A"/><stop offset="1" stop-color="#E0A81E"/>
-</linearGradient></defs>
-<circle cx="32" cy="32" r="24.5" fill="none" stroke="url(#wgold)" stroke-width="1.5" opacity=".26"/>
-<path d="M14 45V31.5a18 18 0 0 1 36 0V45" fill="none" stroke="url(#wgold)" stroke-width="3.4" stroke-linecap="round"/>
-<path d="M8.5 45h47" fill="none" stroke="url(#wgold)" stroke-width="3.4" stroke-linecap="round"/>
-<circle cx="32" cy="31" r="7.6" fill="none" stroke="#00B4FC" stroke-width="2.6"/>
-<circle cx="32" cy="31" r="2.7" fill="#00B4FC"/></svg>
-    <div class="wm">
-      <div class="name">Demo Corp</div>
-      <div class="dept">INFOSEC · Network Engineering</div>
-    </div>
-  </div>
   <div class="brandlock">
     <svg class="mannamark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="WATCHMAN"><defs><linearGradient id="wgold" x1="0" y1="0" x2="0" y2="1">
 <stop offset="0" stop-color="#FFE98A"/><stop offset="1" stop-color="#E0A81E"/>
@@ -372,11 +379,9 @@
       This page makes no network calls on its own.
     </div>
     <div class="fown">
-      <div class="cls">Internal Use Only &mdash; INFOSEC</div>
-      <div class="owner">&copy; Demo Corp, Inc. &middot; Property of Demo Corp</div>
-      <div class="ownersub">Built for Demo Corp INFOSEC &middot; Network Engineering.
-        Work product of Demo Corp, Inc. Not for public or cross-departmental distribution.
-        No tenant data lives on this page.</div>
+      <div class="cls">PUBLIC DEMO &mdash; SYNTHETIC DATA</div>
+      <div class="owner">WATCHMAN &middot; Azure flow-capacity monitoring</div>
+      <div class="ownersub">Demonstration build. Every appliance, interface and measurement on this page is generated - it describes no real network. Deployed from an Azure sandbox subscription.</div>
     </div>
   </div>
 </footer>
