@@ -1,0 +1,143 @@
+# WATCHMAN - scheduled refresh from the Azure API
+#
+# This is the auto-pull. It answers "why copy a command when we have an API":
+# nothing here is copied by hand and no browser calls Azure. The workflow signs
+# in with a SHORT-LIVED OIDC TOKEN issued by GitHub and exchanged for an Azure
+# token — there is NO client secret, nothing stored in the repo, and nothing to
+# rotate or leak.
+#
+# COST: $0. Public repositories get unlimited Actions minutes, and a run is
+# well under a minute. The identity holds Monitoring Reader and Storage Blob
+# Data Contributor on ONE resource group — it cannot read anything else.
+#
+# WHAT IT MUST NOT DO: touch real fleet telemetry. This repository is public.
+# The workflow reads only the sandbox storage account's own platform metrics,
+# which describe the demo's own infrastructure and nothing else.
+name: refresh
+
+on:
+  schedule:
+    # Every 30 minutes. Cron on GitHub is best-effort, not guaranteed to the
+    # minute, which is exactly why the page renders the timestamp it was
+    # given rather than assuming freshness.
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  id-token: write      # required to request the OIDC token
+  contents: write      # required to commit live.js back
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sign in to Azure (OIDC, no secret)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Pull live metrics from the Azure REST API
+        env:
+          SA: ${{ vars.STORAGE_ACCOUNT }}
+          RG: ${{ vars.RESOURCE_GROUP }}
+          SUB: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        run: |
+          set -euo pipefail
+          RID="/subscriptions/$SUB/resourceGroups/$RG/providers/Microsoft.Storage/storageAccounts/$SA"
+
+          START=$(date -u -d '-6 hours' +%Y-%m-%dT%H:%M:%SZ)
+          END=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          # Time the ARM round trip so the page can show real API latency
+          # rather than a decorative number.
+          T0=$(date +%s%3N)
+          az monitor metrics list \
+            --resource "$RID" \
+            --metric UsedCapacity \
+            --aggregation Maximum \
+            --interval PT1H \
+            --start-time "$START" --end-time "$END" \
+            --output json > /tmp/metrics.json
+          T1=$(date +%s%3N)
+          ARM_MS=$((T1 - T0))
+
+          # Transactions is a genuinely moving number - it counts the requests
+          # the demo site itself is serving.
+          az monitor metrics list \
+            --resource "$RID" \
+            --metric Transactions \
+            --aggregation Total \
+            --interval PT1H \
+            --start-time "$START" --end-time "$END" \
+            --output json > /tmp/tx.json
+
+          python3 - "$ARM_MS" <<'PY'
+          import json, sys, datetime
+
+          arm_ms = int(sys.argv[1])
+
+          def points(path, key):
+              with open(path) as f:
+                  d = json.load(f)
+              out = []
+              for m in d.get("value", []):
+                  for ts in m.get("timeseries", []):
+                      for p in ts.get("data", []):
+                          v = p.get(key)
+                          if v is not None:
+                              out.append([p["timeStamp"], v])
+              return out
+
+          cap = points("/tmp/metrics.json", "maximum")
+          tx  = points("/tmp/tx.json", "total")
+
+          payload = {
+              "generated": datetime.datetime.now(datetime.timezone.utc)
+                              .strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "source": "Azure Monitor via ARM REST (GitHub Actions, OIDC)",
+              "armLatencyMs": arm_ms,
+              "usedCapacity": cap,
+              "transactions": tx,
+              "pointCount": len(cap) + len(tx),
+          }
+          with open("live.js", "w") as f:
+              f.write("window.WATCHMAN_LIVE=" + json.dumps(payload, separators=(",", ":")) + ";")
+          print("armLatencyMs=%d points=%d" % (arm_ms, payload["pointCount"]))
+          PY
+
+      - name: Publish live.js to the Azure static website
+        env:
+          SA: ${{ vars.STORAGE_ACCOUNT }}
+        run: |
+          set -euo pipefail
+          az storage blob upload \
+            --account-name "$SA" \
+            --auth-mode login \
+            --container-name '$web' \
+            --name live.js \
+            --file live.js \
+            --content-type 'text/javascript; charset=utf-8' \
+            --content-cache 'public, max-age=60' \
+            --overwrite true
+
+      - name: Commit live.js for GitHub Pages
+        run: |
+          set -euo pipefail
+          git config user.name  'watchman-refresh'
+          git config user.email 'actions@github.com'
+          git add live.js
+          # A run with no metric change is normal, not a failure.
+          if git diff --cached --quiet; then
+            echo 'no change this cycle'
+            exit 0
+          fi
+          git commit -m "refresh: live pull $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
