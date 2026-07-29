@@ -1,0 +1,1 @@
+window.WATCHMAN_LIVE={"generated":"2026-07-29T00:09:14Z","source":"Azure Monitor via ARM REST (GitHub Actions, OIDC)","armLatencyMs":3054,"usedCapacity":[],"transactions":[["2026-07-28T18:09:00Z",0.0],["2026-07-28T19:09:00Z",0.0],["2026-07-28T20:09:00Z",0.0],["2026-07-28T21:09:00Z",167.0],["2026-07-28T22:09:00Z",211.0],["2026-07-28T23:09:00Z",135.0]],"pointCount":6};
